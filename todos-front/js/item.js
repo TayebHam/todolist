@@ -3,6 +3,8 @@ const id = urlParams.get('id');
 
 let todo = {};
 
+
+
 function getItem() {
     if (!!id) {
         console.log("id:", id);
@@ -22,7 +24,7 @@ function getItem() {
 }
 
 function displayTaskDetails(task) {
-    console.log(task);
+
     const taskContainer = document.getElementById('app');
 
     const titleElement = document.createElement('h2');
@@ -32,26 +34,22 @@ function displayTaskDetails(task) {
     const dateElement = document.createElement('p');
     dateElement.innerHTML = "Date de la tâche: "
 
-    const responsibleElement = document.createElement('p');
-    responsibleElement.innerHTML = "Responsable de la tâche: " + task.responsible;
-
-
-
     const descriptionElement = document.createElement('p');
     descriptionElement.innerHTML = task.created_at;
 
 
-
-
-
     taskContainer.appendChild(titleElement);
     taskContainer.appendChild(dateElement);
-    taskContainer.appendChild(responsibleElement);
+
     taskContainer.appendChild(descriptionElement);
 
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Supprimer';
+    deleteButton.classList.add('btn', 'btn-danger', 'float-end');
+    deleteButton.addEventListener('click', () => deleteTask(task.id));
+    taskContainer.appendChild(deleteButton);
 
-
-    task.tags.forEach(tag => {
+    task.Tags.forEach(tag => {
         let tagDiv = document.createElement('div');
         tagDiv.innerHTML = tag;
         taskContainer.appendChild(tagDiv)
@@ -59,25 +57,25 @@ function displayTaskDetails(task) {
 
 }
 
-function fetchTasks() {
-    const url = "http://localhost:3000/todos";
-
-    fetch(url)
-        .then(response => response.json())
-        .then(tasks => {
-            tasks.forEach(task => {
-                // Vérifier si l'identifiant n'est pas défini ou si l'identifiant de la tâche ne correspond pas à celui dans l'URL
-                if (!id || task.id !== id) {
-                    displayTaskDetails(task);
-                }
-            });
+function deleteTask(taskId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
+        fetch(`http://localhost:3000/todos/${taskId}`, {
+            method: 'DELETE',
         })
-        .catch(error => {
-            console.error('Erreur lors de la récupération des tâches:', error);
-        });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                alert('Tâche supprimée avec succès');
+                window.location.href = 'tasks.html';
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+    }
 }
 
+
 window.addEventListener('DOMContentLoaded', () => {
-    fetchTasks();
     getItem();
 });

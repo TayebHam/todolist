@@ -11,6 +11,7 @@ fetch(url)
         tasks.forEach(task => {
             const taskContainer = document.createElement('div');
             taskContainer.classList.add('task-container');
+            taskContainer.style.border = '1px solid #ccc';
 
             const p = document.createElement('p');
             const span = document.createElement('span');
@@ -33,6 +34,12 @@ fetch(url)
             viewButton.classList.add('btn', 'btn-primary', 'float-end');
             viewButton.addEventListener('click', () => viewTaskDetails(task.id));
 
+
+            taskContainer.style.padding = '20px';
+
+
+
+
             taskContainer.appendChild(p);
             taskContainer.appendChild(span);
             taskContainer.appendChild(input);
@@ -40,6 +47,19 @@ fetch(url)
             taskContainer.appendChild(viewButton);
             app.appendChild(taskContainer);
         });
+
+        const statsButton = document.createElement('button');
+        statsButton.textContent = 'Statistiques';
+        statsButton.classList.add('btn', 'btn-primary', 'me-auto', 'float-start');
+
+        statsButton.addEventListener('click', () => {
+            window.location.href = 'stats.html';
+        });
+
+        const appContainer = document.getElementById('app');
+        appContainer.appendChild(statsButton);
+
+
     })
     .catch(error => {
         console.error('Erreur:', error);
@@ -67,6 +87,26 @@ function deleteTask(taskId) {
         });
 }
 
+function deleteTask(taskId) {
+    if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
+        fetch(`http://localhost:3000/todos/${taskId}`, {
+            method: 'DELETE',
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la requête');
+                }
+                alert('Tâche supprimée avec succès');
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+    }
+}
+
+
+
 const createTagsInput = () => {
     const formContainer = document.createElement('div');
     formContainerId = 'form-container';
@@ -82,6 +122,8 @@ const createTagsInput = () => {
     input.id = 'add-task';
     input.name = 'task';
 
+    input.classList.add('form-control', 'mb-3');
+
     const tagsLabel = document.createElement('label');
     tagsLabel.textContent = 'Tags:';
 
@@ -90,10 +132,14 @@ const createTagsInput = () => {
     tagsInput.id = 'add-tags';
     tagsInput.name = 'tags';
 
+    tagsInput.classList.add('form-control', 'mb-3');
+
     const submitButton = document.createElement('button');
     submitButton.type = 'submit';
     submitButton.textContent = 'Ajouter';
     submitButton.classList.add('btn', 'btn-primary', 'me-5');
+
+    formContainer.style.padding = '20px';
 
     form.appendChild(label);
     form.appendChild(input);
@@ -122,7 +168,7 @@ const addTask = (taskText, tagsText) => {
         },
         body: JSON.stringify({
             text: taskText,
-            tags: tagsText.split(',').map(tag => tag.trim()),
+            Tags: tagsText.split(',').map(tag => tag.trim()),
             is_complete: false
         })
     })
