@@ -39,7 +39,6 @@ fetch(url)
 
 
 
-
             taskContainer.appendChild(p);
             taskContainer.appendChild(span);
             taskContainer.appendChild(input);

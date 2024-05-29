@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const app = document.getElementById('app');
 
 
+
     function fetchStats() {
         const url = "http://localhost:3000/todos/";
 

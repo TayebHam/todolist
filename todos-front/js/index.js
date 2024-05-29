@@ -2,6 +2,7 @@ let prenom = document.getElementById('prenom');
 
 let btn = document.getElementById('form');
 
+
 btn.addEventListener('click', (e) => {
     e.preventDefault();
     if (prenom.value == "") {
